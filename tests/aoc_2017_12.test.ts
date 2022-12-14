@@ -1,4 +1,4 @@
-// Test from https://adventofcode.com/, 2017-12-12
+// Test from https://adventofcode.com/2017/day/12
 
 import { assertEquals } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import once from "https://deno.land/x/once@0.3.0/index.ts";
