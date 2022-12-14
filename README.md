@@ -2,10 +2,10 @@
 
 This Deno library implements several pathfinding and graph algorithms.
 
-This library does not need an entire graph to be provided to it ahead of time.
-The nodes and edges must be provided by a successor function executed for each
-node encountered, meaning that graphs are lazily initialized which allows for
-procedural and infinite graphs to be used.
+Where possible, this library does not need an entire graph to be provided to it
+ahead of time. Many functions allow nodes and edges to be provided by a
+successor function executed for each node encountered, meaning that graphs are
+lazily initialized which allows for procedural and infinite graphs to be used.
 
 ## Algorithms
 
