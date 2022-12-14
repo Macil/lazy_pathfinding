@@ -74,7 +74,7 @@ const numberCostOptions: CostOptions<number> = {
  * Multiple equivalent nodes (determined by the {@link AStarOptions.key()} function) will never
  * be included twice in the path.
  *
- * The shortest path starting from `start` up to a node for which {@link AStarOptions.success()} returns `true`
+ * The shortest path starting from {@link AStarOptions.start} up to a node for which {@link AStarOptions.success()} returns `true`
  * is computed and returned along with its total cost, or `undefined` is returned if no successful path
  * was found. The returned path comprises both the start and end node.
  *
@@ -128,6 +128,12 @@ export function aStar<Node, Cost = number>(
     cost: costOptions.zero,
     nodeKey: options.key(options.start),
   });
+
+  interface EncounteredNodeEntry<Node, Cost> {
+    node: Node;
+    parentKey: unknown;
+    cost: Cost;
+  }
   const encounteredNodes = new Map<unknown, EncounteredNodeEntry<Node, Cost>>();
   encounteredNodes.set(options.key(options.start), {
     node: options.start,
@@ -152,7 +158,7 @@ export function aStar<Node, Cost = number>(
     // We may have inserted a node several time into the binary heap if we found
     // a better way to access it. Ensure that we are currently dealing with the
     // best path and discard the others.
-    if (smallestCostHolder.cost > cost) {
+    if (costOptions.compareFn(smallestCostHolder.cost, cost) > 0) {
       continue;
     }
     const successors = options.successors(node);
@@ -184,12 +190,6 @@ export function aStar<Node, Cost = number>(
   return undefined;
 }
 
-interface EncounteredNodeEntry<Node, Cost> {
-  node: Node;
-  parentKey: unknown;
-  cost: Cost;
-}
-
 interface SmallestCostHolder<Cost> {
   /**
    * The estimated cost through this node to the goal.
@@ -215,4 +215,141 @@ function compareSmallestCostHolders<Cost>(
     return estimatedCostsCompared;
   }
   return costOptions.compareFn(a.cost, b.cost);
+}
+
+/**
+ * Compute all shortest paths using the [A* search
+ * algorithm](https://en.wikipedia.org/wiki/A*_search_algorithm). Whereas {@link aStar}
+ * (non-deterministic-ally) returns a single shortest path, `aStarBag` returns all shortest paths
+ * (in a non-deterministic order).
+ *
+ * Multiple equivalent nodes (determined by the {@link AStarOptions.key()} function) will never
+ * be included twice in the path.
+ *
+ * The shortest paths starting from {@link AStarOptions.start} up to a node for which {@link AStarOptions.success()} returns `true`
+ * are computed and returned in an iterable along with the cost (which, by definition, is the same for
+ * each shortest path). If no paths are found, `undefined` is returned. Each path comprises both the start and an end node. Note that while every path shares the same
+ * start node, different paths may have different end nodes.
+ */
+export function aStarBag<Node, Cost = number>(
+  options: AStarOptions<Node, Cost>,
+): [Iterable<Node[]>, Cost] | undefined {
+  const costOptions = options.costOptions ??
+    numberCostOptions as CostOptions<unknown> as CostOptions<Cost>;
+
+  const startKey = options.key(options.start);
+
+  let minCost: Cost | undefined;
+  const sinks = new Set<unknown>();
+
+  const toSee = new BinaryHeap<SmallestCostHolder<Cost>>((a, b) =>
+    compareSmallestCostHolders(costOptions, a, b)
+  );
+  toSee.push({
+    estimatedCost: costOptions.zero,
+    cost: costOptions.zero,
+    nodeKey: startKey,
+  });
+
+  interface EncounteredNodeEntry<Node, Cost> {
+    node: Node;
+    parentKeys: Set<unknown>;
+    cost: Cost;
+  }
+  const encounteredNodes = new Map<unknown, EncounteredNodeEntry<Node, Cost>>();
+  encounteredNodes.set(startKey, {
+    node: options.start,
+    parentKeys: new Set(),
+    cost: costOptions.zero,
+  });
+  while (true) {
+    const smallestCostHolder = toSee.pop();
+    if (!smallestCostHolder) {
+      break;
+    }
+    if (
+      minCost !== undefined &&
+      costOptions.compareFn(smallestCostHolder.estimatedCost, minCost) > 0
+    ) {
+      break;
+    }
+    const { node, cost } = encounteredNodes.get(smallestCostHolder.nodeKey)!;
+    if (options.success(node)) {
+      minCost = cost;
+      sinks.add(smallestCostHolder.nodeKey);
+    }
+    // We may have inserted a node several time into the binary heap if we found
+    // a better way to access it. Ensure that we are currently dealing with the
+    // best path and discard the others.
+    if (costOptions.compareFn(smallestCostHolder.cost, cost) > 0) {
+      continue;
+    }
+    const successors = options.successors(node);
+    for (const [successor, moveCost] of successors) {
+      const newCost = costOptions.add(cost, moveCost);
+      const successorKey = options.key(successor);
+      const heuristicCost = options.heuristic(successor);
+      const encounteredNodeEntry = encounteredNodes.get(successorKey);
+
+      if (!encounteredNodeEntry) {
+        encounteredNodes.set(successorKey, {
+          node: successor,
+          parentKeys: new Set([smallestCostHolder.nodeKey]),
+          cost: newCost,
+        });
+      } else {
+        const comparisonResult = costOptions.compareFn(
+          encounteredNodeEntry.cost,
+          newCost,
+        );
+        if (comparisonResult > 0) { // if encounteredNodeEntry.cost > newCost
+          encounteredNodeEntry.parentKeys.clear();
+          encounteredNodeEntry.parentKeys.add(smallestCostHolder.nodeKey);
+          encounteredNodeEntry.cost = newCost;
+        } else {
+          if (comparisonResult === 0) {
+            // New parent with an identical cost, this is not
+            // considered as an insertion.
+            encounteredNodeEntry.parentKeys.add(smallestCostHolder.nodeKey);
+          }
+          continue;
+        }
+      }
+
+      toSee.push({
+        estimatedCost: costOptions.add(newCost, heuristicCost),
+        cost: newCost,
+        nodeKey: successorKey,
+      });
+    }
+  }
+
+  if (minCost !== undefined) {
+    const sinks_ = Array.from(sinks);
+
+    const paths = (function* () {
+      const path: Node[] = [];
+
+      function* step(path: Node[], currentKey: unknown): Iterable<Node[]> {
+        const parentKeys = encounteredNodes.get(currentKey)!.parentKeys;
+        for (const parentKey of parentKeys) {
+          path.push(encounteredNodes.get(parentKey)!.node);
+          if (parentKey === startKey) {
+            yield path.toReversed();
+          } else {
+            yield* step(path, parentKey);
+          }
+          path.pop();
+        }
+      }
+
+      for (const sink of sinks_) {
+        path.push(encounteredNodes.get(sink)!.node);
+        yield* step(path, sink);
+        path.pop();
+      }
+    })();
+    return [paths, minCost];
+  }
+  return undefined;
 }
