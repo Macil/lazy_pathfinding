@@ -13,13 +13,13 @@ The algorithms are generic over their arguments.
 
 ### Directed graphs
 
-- [A*][A*]: find the shortest path in a weighted graph using an heuristic to
-  guide the process.
+- [A*](https://en.wikipedia.org/wiki/A*_search_algorithm): find the shortest
+  path in a weighted graph using an heuristic to guide the process.
 
 ### Undirected graphs
 
-- [connected components][Connected components]: find disjoint connected sets of
-  vertices.
+- [connected components](https://en.wikipedia.org/wiki/Connected_component_(graph_theory)):
+  find disjoint connected sets of vertices.
 
 ## Documentation
 
