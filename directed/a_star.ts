@@ -1,4 +1,5 @@
 import { BinaryHeap } from "https://deno.land/std@0.167.0/collections/binary_heap.ts";
+import { CostOptions, numberCostOptions } from "./cost_options.ts";
 import { reversePath } from "./_reverse_path.ts";
 
 export interface AStarOptions<Node, Cost = number> {
@@ -44,29 +45,6 @@ export interface AStarOptions<Node, Cost = number> {
   costOptions?: CostOptions<Cost>;
 }
 
-export interface CostOptions<Cost> {
-  /**
-   * Cost value for the initial node.
-   */
-  zero: Cost;
-  /**
-   * Function to add cost values.
-   */
-  add: (a: Cost, b: Cost) => Cost;
-  /**
-   * Function used to determine the order of the elements. It is expected to return
-   * a negative value if the first argument is less than the second argument, zero if they're equal, and a positive
-   * value otherwise.
-   */
-  compareFn: (a: Cost, b: Cost) => number;
-}
-
-const numberCostOptions: CostOptions<number> = {
-  zero: 0,
-  add: (a, b) => a + b,
-  compareFn: (a, b) => a - b,
-};
-
 /**
  * Compute a shortest path using the [A* search
  * algorithm](https://en.wikipedia.org/wiki/A*_search_algorithm).
@@ -82,7 +60,7 @@ const numberCostOptions: CostOptions<number> = {
  *
  * ```ts
  * import { assertEquals } from "https://deno.land/std@0.167.0/testing/asserts.ts";
- * import { aStar } from "./a_star.ts";
+ * import { aStar } from "https://deno.land/x/lazy_pathfinding/directed/a_star.ts";
  *
  * type Pos = [number, number];
  *
