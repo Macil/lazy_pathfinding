@@ -15,6 +15,8 @@ The algorithms are generic over their arguments.
 
 - [A*](https://en.wikipedia.org/wiki/A*_search_algorithm): find the shortest
   path in a weighted graph using an heuristic to guide the process.
+- [Dijkstra](https://en.wikipedia.org/wiki/Dijkstra's_algorithm): find the
+  shortest path in a weighted graph.
 
 ### Undirected graphs
 

@@ -109,6 +109,9 @@ export function aStar<Node, Cost = number>(
 
   interface EncounteredNodeEntry<Node, Cost> {
     node: Node;
+    /**
+     * Either the key of the parent or `null`.
+     */
     parentKey: unknown;
     cost: Cost;
   }
