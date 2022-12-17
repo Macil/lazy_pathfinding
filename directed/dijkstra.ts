@@ -1,4 +1,4 @@
-import { BinaryHeap } from "https://deno.land/std@0.167.0/collections/binary_heap.ts";
+import { BinaryHeap } from "https://deno.land/std@0.168.0/collections/binary_heap.ts";
 import { CostOptions, numberCostOptions } from "./cost_options.ts";
 import { reversePath } from "./_reverse_path.ts";
 
@@ -56,7 +56,7 @@ export interface DijkstraOptions<Node, Cost = number> {
  * # Example
  *
  * ```ts
- * import { assertEquals } from "https://deno.land/std@0.167.0/testing/asserts.ts";
+ * import { assertEquals } from "https://deno.land/std@0.168.0/testing/asserts.ts";
  * import { dijkstra } from "https://deno.land/x/lazy_pathfinding/directed/dijkstra.ts";
  *
  * type Pos = [number, number];
