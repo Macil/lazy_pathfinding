@@ -110,7 +110,7 @@ export function aStar<Node, Cost = number>(
   interface EncounteredNodeEntry<Node, Cost> {
     node: Node;
     /**
-     * Either the key of the parent or `null`.
+     * Either the key of the parent or `undefined`.
      */
     parentKey: unknown;
     cost: Cost;
@@ -118,7 +118,7 @@ export function aStar<Node, Cost = number>(
   const encounteredNodes = new Map<unknown, EncounteredNodeEntry<Node, Cost>>();
   encounteredNodes.set(options.key(options.start), {
     node: options.start,
-    parentKey: null,
+    parentKey: undefined,
     cost: costOptions.zero,
   });
   while (true) {

@@ -85,7 +85,7 @@ export function dijkstra<Node, Cost = number>(
   options: DijkstraOptions<Node, Cost>,
 ): [Node[], Cost] | undefined {
   const [encounteredNodes, successNode] = dijkstraInternal(options);
-  if (successNode === null) {
+  if (successNode === undefined) {
     return undefined;
   }
   const cost = encounteredNodes.get(successNode)!.cost;
@@ -97,7 +97,7 @@ export function dijkstra<Node, Cost = number>(
 export interface DijkstraEncounteredNodeEntry<Node, Cost> {
   node: Node;
   /**
-   * Either the key of the parent or `null`.
+   * Either the key of the parent or `undefined`.
    */
   parentKey: unknown;
   cost: Cost;
@@ -105,7 +105,7 @@ export interface DijkstraEncounteredNodeEntry<Node, Cost> {
 
 /**
  * @returns A map of encountered node keys to their parent key and cost, and the key
- * of the goal node reached if any or else `null`.
+ * of the goal node reached if any or else `undefined`.
  */
 function dijkstraInternal<Node, Cost>(
   options: DijkstraOptions<Node, Cost>,
@@ -127,7 +127,7 @@ function dijkstraInternal<Node, Cost>(
   >();
   encounteredNodes.set(options.key(options.start), {
     node: options.start,
-    parentKey: null,
+    parentKey: undefined,
     cost: costOptions.zero,
   });
   while (true) {
@@ -169,7 +169,7 @@ function dijkstraInternal<Node, Cost>(
       }
     }
   }
-  return [encounteredNodes, null];
+  return [encounteredNodes, undefined];
 }
 
 interface SmallestCostHolder<Cost> {
