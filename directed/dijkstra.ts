@@ -3,6 +3,9 @@ import { CostOptions, numberCostOptions } from "./cost_options.ts";
 import { reversePath } from "./_reverse_path.ts";
 
 export interface DijkstraOptions<Node, Cost = number> {
+  /**
+   * The starting node.
+   */
   start: Node;
   /**
    * Returns a list of successors for a given node, along with the cost for
@@ -84,13 +87,12 @@ export interface DijkstraOptions<Node, Cost = number> {
 export function dijkstra<Node, Cost = number>(
   options: DijkstraOptions<Node, Cost>,
 ): [Node[], Cost] | undefined {
-  const [encounteredNodes, successNode] = dijkstraInternal(options);
-  if (successNode === undefined) {
+  const [encounteredNodes, successNodeKey] = dijkstraInternal(options);
+  if (successNodeKey === undefined) {
     return undefined;
   }
-  const cost = encounteredNodes.get(successNode)!.cost;
-  const path = reversePath(encounteredNodes, (e) => e.parentKey, successNode)
-    .map((nodeKey) => encounteredNodes.get(nodeKey)!.node);
+  const cost = encounteredNodes.get(successNodeKey)!.cost;
+  const path = buildPath(successNodeKey, encounteredNodes);
   return [path, cost];
 }
 
@@ -101,6 +103,95 @@ export interface DijkstraEncounteredNodeEntry<Node, Cost> {
    */
   parentKey: unknown;
   cost: Cost;
+}
+
+/**
+ * Determine all reachable nodes from a starting point as well as the minimum cost to
+ * reach them and a possible optimal parent node
+ * using the [Dijkstra search algorithm](https://en.wikipedia.org/wiki/Dijkstra's_algorithm).
+ *
+ * The result is a map where the key of every reachable node is associated with the node
+ * value, an optimal parent node, and a cost from the start node.
+ *
+ * The {@link buildPath} function can be used to build a full path from the starting point to one
+ * of the reachable targets.
+ *
+ * # Example
+ *
+ * We use a graph of integer nodes from 1 to 9, each node leading to its double and the value
+ * after it with a cost of 10 at every step.
+ *
+ * ```ts
+ * const encounteredNodes = dijkstraAll({
+ *   start: 1,
+ *   successors: (n) => n <= 4 ? [[n * 2, 10], [n * 2 + 1, 10]] : [],
+ *   key: (n) => n,
+ * });
+ * assertEquals(encounteredNodes.size, 9);
+ * assertEquals(encounteredNodes.get(1), {
+ *   node: 1,
+ *   parentKey: undefined,
+ *   cost: 0,
+ * });
+ * assertEquals(encounteredNodes.get(2), {
+ *   node: 2,
+ *   parentKey: 1,
+ *   cost: 10,
+ * });
+ * assertEquals(encounteredNodes.get(3), {
+ *   node: 3,
+ *   parentKey: 1,
+ *   cost: 10,
+ * });
+ * ```
+ */
+export function dijkstraAll<Node, Cost>(
+  options: Omit<DijkstraOptions<Node, Cost>, "success">,
+): Map<unknown, DijkstraEncounteredNodeEntry<Node, Cost>> {
+  return dijkstraInternal({ ...options, success: () => false })[0];
+}
+
+/**
+ * Determine some reachable nodes from a starting point as well as the minimum cost to
+ * reach them and a possible optimal parent node
+ * using the [Dijkstra search algorithm](https://en.wikipedia.org/wiki/Dijkstra's_algorithm).
+ *
+ * The result is a map where the key of every node examined up until the algorithm reaches a node where
+ * {@link DijkstraOptions.success} returns true is associated with a node value, an optimal parent
+ * node, and a cost from the start node, as well as the node which caused the algorithm to stop if
+ * any.
+ *
+ * The {@link buildPath} function can be used to build a full path from the starting point to one
+ * of the reachable targets.
+ */
+export function dijkstraPartial<Node, Cost>(
+  options: DijkstraOptions<Node, Cost>,
+): [Map<unknown, DijkstraEncounteredNodeEntry<Node, Cost>>, Node | undefined] {
+  const [encounteredNodes, successNodeKey] = dijkstraInternal(options);
+  const successNode = successNodeKey === undefined
+    ? undefined
+    : encounteredNodes.get(successNodeKey)!.node;
+  return [encounteredNodes, successNode];
+}
+
+/**
+ * Build a path leading to a target according to a parents map, which must
+ * contain no loop. This function can be used after {@link dijkstraAll} or
+ * {@link dijkstraPartial} to build a path from a starting point to a reachable target.
+ *
+ * @param target is reachable target.
+ * @param encounteredNodes is a map containing an optimal parent, a node's value, and an associated
+ *   cost which is ignored here for every reachable node's key.
+ *
+ * @returns an array with a path from the farthest parent up to the target, including
+ * the target itself.
+ */
+export function buildPath<Node>(
+  targetKey: unknown,
+  encounteredNodes: Map<unknown, DijkstraEncounteredNodeEntry<Node, unknown>>,
+): Node[] {
+  return reversePath(encounteredNodes, (e) => e.parentKey, targetKey)
+    .map((nodeKey) => encounteredNodes.get(nodeKey)!.node);
 }
 
 /**

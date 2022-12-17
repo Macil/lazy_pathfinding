@@ -3,6 +3,9 @@ import { CostOptions, numberCostOptions } from "./cost_options.ts";
 import { reversePath } from "./_reverse_path.ts";
 
 export interface AStarOptions<Node, Cost = number> {
+  /**
+   * The starting node.
+   */
   start: Node;
   /**
    * Returns a list of successors for a given node, along with the cost for
