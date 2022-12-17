@@ -1,5 +1,6 @@
 The MIT License (MIT)
 
+Copyright (c) 2022 Samuel Tardieu <sam@rfc1149.net>
 Copyright (c) 2022 Chris Cowan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

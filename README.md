@@ -38,6 +38,10 @@ import { aStar } from "https://deno.land/x/lazy_pathfinding/directed/a_star.ts";
 This project was ported from the Rust
 [pathfinding](https://github.com/samueltardieu/pathfinding) library.
 
+## License
+
+This code is released under a dual Apache 2.0 / MIT free software license.
+
 ## Contributing
 
 You are welcome to contribute by opening
