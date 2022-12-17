@@ -1,6 +1,7 @@
 # lazy_pathfinding
 
-This Deno library implements several pathfinding and graph algorithms.
+This library implements several pathfinding and graph algorithms. This library
+works with Typescript and Javascript in both Deno and Node.
 
 Where possible, this library does not need an entire graph to be provided to it
 ahead of time. Many functions allow nodes and edges to be provided by a
@@ -29,8 +30,26 @@ See the generated docs at https://deno.land/x/lazy_pathfinding?doc.
 
 ## Using this library
 
+### Deno
+
+Import functions directly from their modules:
+
 ```ts
 import { aStar } from "https://deno.land/x/lazy_pathfinding/directed/a_star.ts";
+```
+
+### Node
+
+Use npm to install
+[lazy-pathfinding](https://www.npmjs.com/package/lazy-pathfinding) and then
+import functions directly from their modules:
+
+```
+npm install lazy-pathfinding
+```
+
+```ts
+import { aStar } from "lazy-pathfinding/directed/a_star";
 ```
 
 ## Related Projects

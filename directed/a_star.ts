@@ -319,7 +319,7 @@ export function aStarBag<Node, Cost = number>(
         for (const parentKey of parentKeys) {
           path.push(encounteredNodes.get(parentKey)!.node);
           if (parentKey === startKey) {
-            yield path.toReversed();
+            yield path.slice().reverse();
           } else {
             yield* step(path, parentKey);
           }
