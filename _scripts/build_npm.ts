@@ -8,7 +8,7 @@ import {
   build,
   BuildOptions,
   emptyDir,
-} from "https://deno.land/x/dnt@0.32.0/mod.ts";
+} from "https://deno.land/x/dnt@0.32.1/mod.ts";
 
 const version = Deno.args[0];
 if (typeof version !== "string") {
