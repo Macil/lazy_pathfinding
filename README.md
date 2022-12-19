@@ -52,6 +52,18 @@ npm install lazy-pathfinding
 import { aStar } from "lazy-pathfinding/directed/a_star";
 ```
 
+If you're using Typescript with Node, then you must set the `moduleResolution`
+compiler option to "nodenext" in your `tsconfig.json`:
+
+```jsonc
+{
+  "compilerOptions": {
+    "moduleResolution": "nodenext"
+    // ...
+  }
+}
+```
+
 ## Related Projects
 
 This project was ported from the Rust
