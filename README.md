@@ -1,4 +1,4 @@
-# lazy_pathfinding
+# lazy-pathfinding
 
 This library implements several pathfinding and graph algorithms. This library
 works with Typescript and Javascript in both Deno and Node.
