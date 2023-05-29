@@ -1,14 +1,14 @@
 // npm publishing instructions:
 //  deno run -A _scripts/build_npm.ts [VERSION]
 //  cd npm && npm publish
-import { walk } from "https://deno.land/std@0.168.0/fs/walk.ts";
-import { join } from "https://deno.land/std@0.168.0/path/posix.ts";
-import { SEP_PATTERN } from "https://deno.land/std@0.168.0/path/separator.ts";
+import { walk } from "https://deno.land/std@0.189.0/fs/walk.ts";
+import { join } from "https://deno.land/std@0.189.0/path/posix.ts";
+import { SEP_PATTERN } from "https://deno.land/std@0.189.0/path/separator.ts";
 import {
   build,
   BuildOptions,
   emptyDir,
-} from "https://deno.land/x/dnt@0.32.1/mod.ts";
+} from "https://deno.land/x/dnt@0.36.0/mod.ts";
 
 const version = Deno.args[0];
 if (typeof version !== "string") {

@@ -1,6 +1,6 @@
 // Test from https://adventofcode.com/2017/day/12
 
-import { assertEquals } from "https://deno.land/std@0.168.0/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std@0.189.0/testing/asserts.ts";
 import once from "https://deno.land/x/once@0.3.0/index.ts";
 import {
   componentIndex,

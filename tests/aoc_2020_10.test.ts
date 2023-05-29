@@ -1,6 +1,6 @@
 // Test from https://adventofcode.com/2020/day/10
 
-import { assertEquals } from "https://deno.land/std@0.168.0/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std@0.189.0/testing/asserts.ts";
 import { countPaths } from "../directed/count_paths.ts";
 
 Deno.test("part 2", () => {

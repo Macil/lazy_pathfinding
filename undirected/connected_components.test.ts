@@ -2,7 +2,7 @@ import {
   assert,
   assertEquals,
   assertNotEquals,
-} from "https://deno.land/std@0.168.0/testing/asserts.ts";
+} from "https://deno.land/std@0.189.0/testing/asserts.ts";
 import { components, separateComponents } from "./connected_components.ts";
 
 Deno.test("basic separate components", () => {

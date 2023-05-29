@@ -1,4 +1,4 @@
-import { BinaryHeap } from "https://deno.land/std@0.168.0/collections/binary_heap.ts";
+import { BinaryHeap } from "https://deno.land/std@0.189.0/collections/binary_heap.ts";
 import { reversePath } from "./_reverse_path.ts";
 import { CostOptions, numberCostOptions } from "./cost_options.ts";
 
@@ -66,7 +66,7 @@ export interface AStarOptions<Node, Cost = number> {
  * # Example
  *
  * ```ts
- * import { assertEquals } from "https://deno.land/std@0.168.0/testing/asserts.ts";
+ * import { assertEquals } from "https://deno.land/std@0.189.0/testing/asserts.ts";
  * import { aStar } from "https://deno.land/x/lazy_pathfinding/directed/a_star.ts";
  *
  * type Pos = [number, number];

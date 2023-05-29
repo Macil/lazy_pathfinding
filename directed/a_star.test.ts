@@ -1,4 +1,4 @@
-import { assertEquals } from "https://deno.land/std@0.168.0/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std@0.189.0/testing/asserts.ts";
 import { aStar } from "./a_star.ts";
 
 Deno.test("aStar() doc example", () => {
