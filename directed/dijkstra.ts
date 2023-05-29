@@ -1,6 +1,6 @@
 import { BinaryHeap } from "https://deno.land/std@0.168.0/collections/binary_heap.ts";
-import { CostOptions, numberCostOptions } from "./cost_options.ts";
 import { reversePath } from "./_reverse_path.ts";
+import { CostOptions, numberCostOptions } from "./cost_options.ts";
 
 export interface DijkstraOptions<Node, Cost = number> {
   /**
@@ -40,6 +40,10 @@ export interface DijkstraOptions<Node, Cost = number> {
    * further indexes.
    */
   costOptions?: CostOptions<Cost>;
+  /**
+   * Stop considering paths that have a cost greater than this value.
+   */
+  maxCost?: Cost;
 }
 
 /**
@@ -239,6 +243,14 @@ function dijkstraInternal<Node, Cost>(
     const successors = options.successors(node);
     for (const [successor, moveCost] of successors) {
       const newCost = costOptions.add(cost, moveCost);
+
+      if (
+        options.maxCost !== undefined &&
+        costOptions.compareFn(newCost, options.maxCost) > 0
+      ) {
+        continue;
+      }
+
       const successorKey = options.key(successor);
       const encounteredNodeEntry = encounteredNodes.get(successorKey);
 

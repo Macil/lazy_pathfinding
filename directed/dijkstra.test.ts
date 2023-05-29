@@ -189,3 +189,30 @@ Deno.test("dijkstraPartial, successful", () => {
     cost: 20,
   });
 });
+
+Deno.test("dijkstraPartial, no success because of maxCost", () => {
+  const [encounteredNodes, successNode] = dijkstraPartial({
+    start: 1,
+    successors: (n) => n <= 4 ? [[n * 2, 10], [n * 2 + 1, 10]] : [],
+    success: (n) => n === 7,
+    key: (n) => n,
+    maxCost: 18,
+  });
+  assertEquals(successNode, undefined);
+  assertEquals(encounteredNodes.size, 3);
+  assertEquals(encounteredNodes.get(1), {
+    node: 1,
+    parentKey: undefined,
+    cost: 0,
+  });
+  assertEquals(encounteredNodes.get(2), {
+    node: 2,
+    parentKey: 1,
+    cost: 10,
+  });
+  assertEquals(encounteredNodes.get(3), {
+    node: 3,
+    parentKey: 1,
+    cost: 10,
+  });
+});

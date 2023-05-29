@@ -62,3 +62,34 @@ Deno.test("numerous solutions", () => {
   assertEquals(cost, N * 2);
   assertEquals(Array.from(solutions).length, 1 << N);
 });
+
+Deno.test("multiple sinks, max cost", () => {
+  // 1 --> 2 --> 4
+  //   --> 3 --> 4
+  //
+  // 2 --> 5 --> 6 --> 7
+  // 3 --> 5 --> 6 --> 7
+  const result = aStarBag({
+    start: 1,
+    successors: (node) => {
+      switch (node) {
+        case 1:
+          return [[2, 1], [3, 1]];
+        case 2:
+        case 3:
+          return [[4, 3], [5, 1]];
+        case 5:
+          return [[6, 1]];
+        case 6:
+          return [[7, 1]];
+        default:
+          return [];
+      }
+    },
+    heuristic: () => 0,
+    success: (node) => node === 4 || node === 7,
+    key: (node) => node,
+    maxCost: 3,
+  });
+  assertEquals(result, undefined);
+});
