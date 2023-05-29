@@ -3,18 +3,12 @@
     "test": "deno test"
   },
   "test": {
-    "files": {
-      "exclude": ["./npm"]
-    }
+    "exclude": ["./npm"]
   },
   "lint": {
-    "files": {
-      "exclude": ["./npm"]
-    }
+    "exclude": ["./npm"]
   },
   "fmt": {
-    "files": {
-      "exclude": ["./npm"]
-    }
+    "exclude": ["./npm"]
   }
 }
