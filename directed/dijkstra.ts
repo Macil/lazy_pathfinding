@@ -192,7 +192,10 @@ export function dijkstraPartial<Node, Cost>(
  */
 export function buildPath<Node>(
   targetKey: unknown,
-  encounteredNodes: Map<unknown, DijkstraEncounteredNodeEntry<Node, unknown>>,
+  encounteredNodes: ReadonlyMap<
+    unknown,
+    DijkstraEncounteredNodeEntry<Node, unknown>
+  >,
 ): Node[] {
   return reversePath(encounteredNodes, (e) => e.parentKey, targetKey)
     .map((nodeKey) => encounteredNodes.get(nodeKey)!.node);

@@ -1,5 +1,5 @@
 export function reversePath<Entry>(
-  encounteredNodes: Map<unknown, Entry>,
+  encounteredNodes: ReadonlyMap<unknown, Entry>,
   extractParentNodeKey: (entry: Entry) => unknown,
   startNodeKey: unknown,
 ): unknown[] {
