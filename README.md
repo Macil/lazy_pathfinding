@@ -1,5 +1,8 @@
 # lazy-pathfinding
 
+**This npm and deno.land package has been superceded by the JSR package
+[@macil/pathfinding](https://jsr.io/@macil/pathfinding).**
+
 This library implements several pathfinding and graph algorithms. This library
 works with Typescript and Javascript in both Deno and Node.
 
